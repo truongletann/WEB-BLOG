@@ -18,7 +18,7 @@ OUT_POSTS = SITE / "posts"
 CAT_DIR   = SITE / "category"
 
 BASE_URL = os.environ.get("BASE_URL", "/").rstrip("/") + "/"
-BRAND    = os.environ.get("BRAND", "DeanLe Blog")  # brand trên header
+BRAND    = os.environ.get("BRAND", "CacheMissed Blog")  # brand trên header
 
 SITE.mkdir(exist_ok=True)
 OUT_POSTS.mkdir(parents=True, exist_ok=True)
@@ -193,7 +193,7 @@ footer{max-width:var(--w);margin:40px auto 60px;padding:0 16px;color:var(--muted
 
 # ---------- Templates ----------
 def header_html(base: str, brand_text: str | None = None, crumb_title: str | None = None) -> str:
-    """Header fixed: 'DeanLe Blog' + '/ [icon] Tên bài' (nếu có)."""
+    """Header fixed: 'CacheMissed Blog' + '/ [icon] Tên bài' (nếu có)."""
     txt = brand_text or BRAND
     doc_svg = """<svg class="docico" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M14 2v6h6" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>"""
     crumb = f'<span class="brand-path"> <span class="sep">/</span> {doc_svg}<span class="crumb-txt">{crumb_title}</span></span>' if crumb_title else ""
@@ -253,7 +253,7 @@ INDEX_HTML = Template("""
   </div>
 </main>
 
-<footer><div class="hr"></div><p>© {{ year }} • deanle</p></footer>
+<footer><div class="hr"></div><p>© {{ year }} • CacheMissed</p></footer>
 
 <script>
 (function(){const k='pref-theme',r=document.documentElement,b=document.getElementById('themeToggle');const s=localStorage.getItem(k);r.setAttribute('data-theme',(s==='dark'||s==='light')?s:'light');function x(){b.setAttribute('aria-pressed',r.getAttribute('data-theme')==='dark')}x();b.addEventListener('click',()=>{const c=r.getAttribute('data-theme')==='dark'?'light':'dark';r.setAttribute('data-theme',c);localStorage.setItem(k,c);x()});})();
@@ -291,7 +291,7 @@ POST_HTML = Template("""
   </article>
 </div>
 
-<footer><div class="hr"></div><p style="max-width:var(--w);margin:0 auto 40px;padding:0 16px;color:var(--muted)">© {{ year }} • deanle</p></footer>
+<footer><div class="hr"></div><p style="max-width:var(--w);margin:0 auto 40px;padding:0 16px;color:var(--muted)">© {{ year }} • CacheMissed</p></footer>
 
 <script>
 (function(){const k='pref-theme',r=document.documentElement,b=document.getElementById('themeToggle');const s=localStorage.getItem(k);r.setAttribute('data-theme',(s==='dark'||s==='light')?s:'light');function x(){b.setAttribute('aria-pressed',r.getAttribute('data-theme')==='dark')}x();b.addEventListener('click',()=>{const c=r.getAttribute('data-theme')==='dark'?'light':'dark';r.setAttribute('data-theme',c);localStorage.setItem(k,c);x()});})();
@@ -365,7 +365,7 @@ CAT_HTML = Template("""
   </div>
 </main>
 
-<footer><div class="hr"></div><p>© {{ year }} • deanle</p></footer>
+<footer><div class="hr"></div><p>© {{ year }} • CacheMissed</p></footer>
 
 <script>
 (function(){const k='pref-theme',r=document.documentElement,b=document.getElementById('themeToggle');const s=localStorage.getItem(k);r.setAttribute('data-theme',(s==='dark'||s==='light')?s:'light');function x(){b.setAttribute('aria-pressed',r.getAttribute('data-theme')==='dark')}x();b.addEventListener('click',()=>{const c=r.getAttribute('data-theme')==='dark'?'light':'dark';r.setAttribute('data-theme',c);localStorage.setItem(k,c);x()});})();
@@ -423,7 +423,7 @@ def render_post(md_path: Path, slug_hint: str, entries: list, cats_map: dict):
 
   page = POST_HTML.render(
     title=title, date_human=date_human, content=html, category=main_cat,
-    header=header_html(BASE_URL, brand_text="DeanLe Blog", crumb_title=title),
+    header=header_html(BASE_URL, brand_text="CacheMissed Blog", crumb_title=title),
     year=datetime.date.today().year,
     base=BASE_URL, canonical=urljoin(BASE_URL, f"posts/{out.name}")
   )
@@ -445,8 +445,8 @@ def build_all():
   pills = [{"href": f"{BASE_URL}category/{slugify(c)}.html", "label": c} for c in unique_cats]
 
   index = INDEX_HTML.render(
-    title="DeanLe Blog",
-    header=header_html(BASE_URL, brand_text="DeanLe Blog"),
+    title="CacheMissed Blog",
+    header=header_html(BASE_URL, brand_text="CacheMissed Blog"),
     pills=pills,
     posts=entries,
     year=datetime.date.today().year,
@@ -458,7 +458,7 @@ def build_all():
     posts.sort(key=lambda x:x["date"], reverse=True)
     page = CAT_HTML.render(
       title=cat,
-      header=header_html(BASE_URL, brand_text="DeanLe Blog"),
+      header=header_html(BASE_URL, brand_text="CacheMissed Blog"),
       cat_name=cat,
       pills=pills,
       posts=posts,
@@ -478,7 +478,7 @@ def build_all():
 </item>""")
   feed=f"""<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0"><channel>
-<title>DeanLe Blog</title><link>{BASE_URL}</link><description>RSS</description>
+<title>CacheMissed Blog</title><link>{BASE_URL}</link><description>RSS</description>
 {''.join(items)}
 </channel></rss>"""
   (SITE/"feed.xml").write_text(feed.strip(), encoding="utf-8")
