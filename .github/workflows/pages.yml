@@ -1,14 +1,17 @@
-name: Build & Deploy Pages
+name: Deploy static site to GitHub Pages
 
 on:
   push:
-    branches: [ "main" ]  
-  workflow_dispatch:      
+    branches: [ main ]
+  workflow_dispatch:
+
+# Quyền cần thiết cho GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
+# Tránh chồng job deploy
 concurrency:
   group: "pages"
   cancel-in-progress: true
@@ -17,17 +20,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout repo
         uses: actions/checkout@v4
-
-      - name: Show tree (debug)
-        run: |
-          pwd
-          ls -la
-          echo "---- posts ----"
-          ls -la posts || true
-          echo "---- workflows ----"
-          ls -la .github/workflows || true
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -39,19 +33,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-
       - name: Build site with publish.py
         env:
-          BASE_URL: "/WEB-BLOG/"
-          BRAND: "DeanLe Blog"
+          BASE_URL: "/"           
+          BRAND: "Cache Missed Blog"    
         run: |
           python ./publish.py
-          echo "---- build output ----"
-          ls -la site || true
-          test -d site || (echo "❌ Không thấy thư mục site/ sau khi build"; exit 1)
-          test -f site/index.html || (echo "❌ Không thấy site/index.html"; exit 1)
+          ls -la site
 
-      - name: Upload artifact
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: site
@@ -62,7 +52,25 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
     steps:
+      # Nếu muốn xoá domain cũ (an toàn), bỏ comment block sau:
+      # - name: Clear leftover custom domain (optional safety)
+      #   run: |
+      #     gh api repos/${{ github.repository }}/pages \
+      #       --method PATCH \
+      #       -H "Accept: application/vnd.github+json" \
+      #       -F "cname="
+      #   env:
+      #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Pages (set custom domain)
+        uses: actions/configure-pages@v5
+        with:
+          cname: blog.yourdomain   # <--- THAY BẰNG subdomain thật của bạn
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
