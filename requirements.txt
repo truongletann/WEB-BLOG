@@ -1,0 +1,4 @@
+﻿markdown
+python-frontmatter
+python-slugify
+jinja2
